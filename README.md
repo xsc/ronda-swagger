@@ -154,6 +154,42 @@ following JSON:
 }
 ```
 
+### Step 4: Customize
+
+Additional swagger-relevant data can be either added to the schemas or the
+route metadata. The following two descriptors will result in the same Swagger
+output:
+
+```clojure
+(def metadata-in-schema
+  (-> (bidi/descriptor
+        ["/" {["doc/" :id]   :doc
+              "swagger.json" :swagger}])
+      (routing/enable-middlewares
+        :doc {:schema {:get {:params {:id s/Int}
+                             :description "Get document."
+                             :produces ["text/plain"]
+                             ...}}})))
+```
+
+And:
+
+```clojure
+(def metadata-in-route
+  (-> (bidi/descriptor
+        ["/" {["doc/" :id]   :doc
+              "swagger.json" :swagger}])
+      (routing/enable-middlewares
+        :doc {:schema {:get {:params {:id s/Int}}}
+              :swagger {:description "Get document."
+                        :produces ["text/plain]
+                        ...}})))
+```
+
+Allowed metadata keys are: `:description`, `:summary`, `:tags`, `:consumes`,
+`:produces`, `:schemes`, `:external-docs`, `:deprecated?` and `:id`, as well as
+every key starting with `:x-`.
+
 ## License
 
 ```
