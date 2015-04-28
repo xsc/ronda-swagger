@@ -32,7 +32,7 @@
   "Make sure all route params are available in the schema, adding them
    with type 'string' if missing."
   [route-params :- [s/Any]
-   params       :- {s/Any s/Any}]
+   params       :- (s/maybe {s/Any s/Any})]
   (let [exists? (set (map param-k (keys params)))
         missing (remove exists? route-params)]
     (merge
