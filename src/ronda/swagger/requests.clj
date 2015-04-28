@@ -1,4 +1,4 @@
-(ns ronda.swagger.requests
+(ns ^:no-doc ronda.swagger.requests
   (:require [ronda.swagger
              [parameters :as parameters]
              [responses :as responses]]

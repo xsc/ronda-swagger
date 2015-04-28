@@ -1,4 +1,4 @@
-(ns ronda.swagger.responses
+(ns ^:no-doc ronda.swagger.responses
   (:require [ronda.schema.data
              [common :as common]
              [request :as rq]

@@ -1,4 +1,4 @@
-(ns ronda.swagger.path
+(ns ^:no-doc ronda.swagger.path
   (:require [schema.core :as s]))
 
 (defn- add-route-param

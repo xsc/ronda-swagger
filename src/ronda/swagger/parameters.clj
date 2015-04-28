@@ -1,4 +1,4 @@
-(ns ronda.swagger.parameters
+(ns ^:no-doc ronda.swagger.parameters
   (:require [ronda.schema.data.request :as rq]
             [ring.swagger.swagger2-schema :as sw]
             [schema.core :as s]))

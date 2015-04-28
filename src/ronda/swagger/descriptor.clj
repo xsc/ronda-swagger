@@ -1,4 +1,4 @@
-(ns ronda.swagger.descriptor
+(ns ^:no-doc ronda.swagger.descriptor
   (:require [ronda.swagger
              [path :as path]
              [requests :as requests]]
