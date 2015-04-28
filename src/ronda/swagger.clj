@@ -85,8 +85,10 @@
        :or {memoize? true
             encode   identity}
        :as options}]]
-  (let [swagger-opts (dissoc options :memoize?)
-        response-for (comp encode #(swagger-json-response % swagger-opts))
+  (let [swagger-opts (dissoc options :memoize? :encode)
+        response-for (fn [request]
+                       (some-> (swagger-json-response request swagger-opts)
+                               (update-in [:body] #(some-> % encode))))
         response-for (if memoize?
                        (memoize response-for)
                        response-for)]
