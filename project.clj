@@ -10,4 +10,10 @@
                  [ronda/routing "0.2.6"]
                  [ronda/schema "0.1.1"]
                  [cheshire "5.4.0"]]
+  :profiles {:codox {:plugins [[codox "0.8.10"]]
+                     :codox {:project {:name "ronda/swagger"}
+                             :src-dir-uri "https://github.com/xsc/ronda-swagger/blob/master/"
+                             :src-linenum-anchor-prefix "L"
+                             :defaults {:doc/format :markdown}}}}
+  :aliases {"codox" ["with-profile" "+codox" "doc"]}
   :pedantic? :abort)
