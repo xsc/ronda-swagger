@@ -1,8 +1,12 @@
 # ronda-swagger
 
-__ronda-swagger__ brings together [ronda/routing][ronda-routing],
-[ronda/schema][ronda-schema] and [ring-swagger][ring-swagger] to generate
-[Swagger 2.0][swagger2] specifications from ronda `RouteDescriptor`s.
+__ronda-swagger__ brings together:
+
+- [ronda/routing][ronda-routing],
+- [ronda/schema][ronda-schema], and
+-  [ring-swagger][ring-swagger]
+
+ to generate [Swagger 2.0][swagger2] specifications for your API.
 
 [ronda-routing]: https://github.com/xsc/ronda-routing
 [ronda-schema]: https://github.com/xsc/ronda-schema
