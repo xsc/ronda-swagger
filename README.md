@@ -36,7 +36,7 @@ created using e.g. [ronda-routing-bidi][ronda-routing-bidi]:
 ```
 
 This descriptor contains a single route (`:doc`) identified by the path
-`/doc/:id`. It can be injected into your Ring stack in the following manner:
+`/doc/:id` and can be injected into your Ring stack quite easily:
 
 ```clojure
 (require '[ronda.routing :as routing])
@@ -68,9 +68,7 @@ themselves are expected to be associated with the `:schema` key:
         :doc {:schema {:get {:params {:id s/Int}}}})))
 ```
 
-Integration with the stack requires `ronda.routing/meta-middleware` (there is no
-such convenience function in ronda-schema to avoid having it depend on
-ronda-routing, by the way):
+Integration with the stack requires `ronda.routing/meta-middleware`:
 
 ```clojure
 (require '[ronda.schema :refer [wrap-schema]])
@@ -83,7 +81,7 @@ ronda-routing, by the way):
 ```
 
 For more information on the capabilities of ronda's schemas, see the
-[respective documentation][ronda-schema]. Note that actually adding the schema
+[respective documentation][ronda-schema]. Note that _actually adding_ the schema
 middleware is not necessary for ronda-swagger to work - but why wouldn't you?
 
 ### Step 3: Swagger
