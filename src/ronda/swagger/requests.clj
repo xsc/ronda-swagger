@@ -1,5 +1,7 @@
 (ns ronda.swagger.requests
-  (:require [ronda.swagger.parameters :as parameters]
+  (:require [ronda.swagger
+             [parameters :as parameters]
+             [responses :as responses]]
             [ronda.schema.data
              [common :as common]
              [request :as rq]]
@@ -49,7 +51,7 @@
                      schema
                      request-method
                      route-params)
-       :responses  {}}
+       :responses  (responses/collect schema)}
       (merge (request-metadata schema))))
 
 (s/defn ^:private add-swagger-request :- SwaggerRequests
