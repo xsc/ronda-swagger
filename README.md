@@ -6,7 +6,7 @@ __ronda-swagger__ brings together:
 - [ronda/schema][ronda-schema], and
 -  [ring-swagger][ring-swagger]
 
- to generate [Swagger 2.0][swagger2] specifications for your API.
+to generate [Swagger 2.0][swagger2] specifications for your API.
 
 [ronda-routing]: https://github.com/xsc/ronda-routing
 [ronda-schema]: https://github.com/xsc/ronda-schema
