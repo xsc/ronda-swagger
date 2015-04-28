@@ -86,12 +86,16 @@
             encode   identity}
        :as options}]]
   (let [swagger-opts (dissoc options :memoize? :encode)
-        response-for (fn [request]
-                       (some-> (swagger-json-response request swagger-opts)
+        disable #(descriptor/disable-swagger % [%2])
+        response-for (fn [descriptor route-id]
+                       (some-> descriptor
+                               (cond-> route-id (disable route-id))
+                               (swagger-json-response swagger-opts)
                                (update-in [:body] #(some-> % encode))))
         response-for (if memoize?
                        (memoize response-for)
                        response-for)]
     (fn [request]
       (response-for
-        (routing/descriptor request)))))
+        (routing/descriptor request)
+        (routing/endpoint request)))))
