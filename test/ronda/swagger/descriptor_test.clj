@@ -1,7 +1,6 @@
 (ns ronda.swagger.descriptor-test
   (:require [midje.sweet :refer :all]
             [ronda.swagger.descriptor :as d]
-            [ronda.routing.descriptor :refer [RouteDescriptor]]
             [ronda.routing.bidi :as bidi]
             [ronda.routing.middleware-data :as md]
             [schema.core :as s]))
