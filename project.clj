@@ -7,10 +7,11 @@
             :key "mit"}
   :dependencies [[org.clojure/clojure "1.7.0-beta2"]
                  [metosin/ring-swagger "0.20.1"]
-                 [ronda/routing "0.2.6"]
+                 [ronda/routing "0.2.7"]
                  [ronda/schema "0.1.1"]
                  [cheshire "5.4.0"]]
   :profiles {:dev {:dependencies [[midje "1.7.0-SNAPSHOT"]
+                                  [ronda/routing-bidi "0.1.1"]
                                   [org.clojure/math.combinatorics "0.1.1"]
                                   [joda-time "2.7"]]
                    :plugins [[lein-midje "3.1.3"]]}
