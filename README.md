@@ -21,140 +21,43 @@ __Leiningen__ ([via Clojars][clojars])
 
 [clojars]: https://clojars.org/ronda/swagger
 
-### Step 1: Routes
+Have a look at the [quickstart guide](QUICKSTART.md) for a step-by-step
+walkthrough on creating a schema-based, swagger-capable web app.
 
-The main data structure offered by ronda is the `RouteDescriptor` which
-represents all available paths and - optionally - additional metadata. It can be
-created using e.g. [ronda-routing-bidi][ronda-routing-bidi]:
+### Swagger from `RouteDescriptor`
 
-```clojure
-(require '[ronda.routing.bidi :as bidi])
-
-(def routes
-  (bidi/descriptor
-    ["/" {["doc/" :id] :doc}]))
-```
-
-This descriptor contains a single route (`:doc`) identified by the path
-`/doc/:id` and can be injected into your Ring stack quite easily:
+Any [`RouteDescriptor`][route-descriptor] can be immediately transformed into a 
+Clojure map representing the Swagger specification using
+`ronda.swagger/swagger-json`:
 
 ```clojure
-(require '[ronda.routing :as routing])
-
-(def app
-  (-> (routing/compile-endpoints
-        {:doc (constantly {:status 200})})
-      (routing/wrap-routing routes)))
+(require '[ronda.swagger :as swag])
+(swag/swagger-json descriptor)
+;; => {:swagger "2.0", :info {:title "Swagger API", :version "0.0.1"}, ...}
 ```
 
-See [ronda-routing][ronda-routing] for detailed descriptions of the middlewares
-and functionality it offers.
-
-[ronda-routing-bidi]: https://github.com/xsc/ronda-routing-bidi
-
-### Step 2: Schemas
-
-Ronda allows for middlewares to be activated per-route by associating them with
-a unique middleware key. The schema middleware, as well as the schemas
-themselves are expected to be associated with the `:schema` key:
+You can pass an additional map, containing data and options that should be
+directly passed to the underlying generator:
 
 ```clojure
-(require '[schema.core :as s])
-
-(def routes
-  (-> (bidi/descriptor
-        ["/" {["doc/" :id] :doc}])
-      (routing/enable-middlewares
-        :doc {:schema {:get {:params {:id s/Int}}}})))
+(swag/swagger-json
+  descriptor
+  {:info {:title "ronda API", :version "v1}})
+;; => {:swagger "2.0", :info {:title "ronda API", :version "v1"}, ...}
 ```
 
-Integration with the stack requires `ronda.routing/meta-middleware`:
+Options passed to [ring-swagger][ring-swagger] are:
 
-```clojure
-(require '[ronda.schema :refer [wrap-schema]])
+- `:ignore-missing-mappings?`
+- `:default-response-description-fn`
 
-(def app
-  (-> (routing/compile-endpoints
-        {:doc (constantly {:status 200})})
-      (routing/meta-middleware :schema #(wrap-schema % %3))
-      (routing/wrap-routing routes)))
-```
+To have schemas appear in the swagger output, ronda-schema has to be integrated
+as described [in its README][ronda-schema-integration].
 
-For more information on the capabilities of ronda's schemas, see the
-[respective documentation][ronda-schema]. Note that _actually adding_ the schema
-middleware is not necessary for ronda-swagger to work - but why wouldn't you?
+[route-descriptor]: https://github.com/xsc/ronda-routing#route-descriptors
+[ronda-schema-integration]: https://github.com/xsc/ronda-schema#integration-with-rondarouting
 
-### Step 3: Swagger
-
-Adding Swagger is a matter of adding the endpoint provided by ronda-swagger, as
-well as a path leading to it. The Ring handler can be generated as follows:
-
-```clojure
-(require '[ronda.swagger :as swag]
-         '[cheshire.core :as json])
-
-(def swagger
-  (swag/swagger-handler
-    {:info {:title "ronda API", :version "0.1.0"}
-     ;; By default, the body is just the Clojure map. This option adds
-     ;; JSON encoding.
-     :encode #(json/generate-string % {:pretty true})}))
-```
-
-Making routes and the stack look like the following:
-
-```clojure
-(def routes
-  (-> (bidi/descriptor
-        ["/" {["doc/" :id]   :doc
-              "swagger.json" :swagger}])
-      (routing/enable-middlewares
-        :doc {:schema {:get {:params {:id s/Int}}}})))
-
-(def app
-  (-> (routing/compile-endpoints
-        {:doc (constantly {:status 200})})
-      (routing/meta-middleware :schema #(wrap-schema % %3))
-      (routing/wrap-endpoint :swagger swagger)
-      (routing/wrap-routing routes)))
-```
-
-Requesting `/swagger.json` will call the `:swagger` handler and generate the
-following JSON:
-
-```json
-{
-  "swagger" : "2.0",
-  "info" : {
-    "title" : "ronda API",
-    "version" : "0.1.0"
-  },
-  "produces" : [ "application/json" ],
-  "consumes" : [ "application/json" ],
-  "paths" : {
-    "/doc/{id}" : {
-      "get" : {
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "description" : "",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : ""
-          }
-        }
-      }
-    }
-  },
-  "definitions" : { }
-}
-```
-
-### Step 4: Customize
+### Custom Metadata
 
 Additional swagger-relevant data can be either added to the schemas or the
 route metadata. The following two descriptors will result in the same Swagger
@@ -162,28 +65,23 @@ output:
 
 ```clojure
 (def metadata-in-schema
-  (-> (bidi/descriptor
-        ["/" {["doc/" :id]   :doc
-              "swagger.json" :swagger}])
-      (routing/enable-middlewares
-        :doc {:schema {:get {:params {:id s/Int}
-                             :description "Get document."
-                             :produces ["text/plain"]
-                             ...}}})))
+  (routing/enable-middlewares
+    descriptor
+    :doc {:schema {:get {:params {:id s/Int}
+                         :description "Get document."
+                         :produces ["text/plain"]
+                         ...}}}))
 ```
 
 And:
 
 ```clojure
 (def metadata-in-route
-  (-> (bidi/descriptor
-        ["/" {["doc/" :id]   :doc
-              "swagger.json" :swagger}])
-      (routing/enable-middlewares
-        :doc {:schema {:get {:params {:id s/Int}}}
-              :swagger {:description "Get document."
-                        :produces ["text/plain]
-                        ...}})))
+  (routing/enable-middlewares
+    :doc {:schema {:get {:params {:id s/Int}}}
+          :swagger {:description "Get document."
+                    :produces ["text/plain]
+                    ...}}))
 ```
 
 Allowed metadata keys are: `:description`, `:summary`, `:tags`, `:consumes`,
