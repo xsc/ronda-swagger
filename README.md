@@ -8,10 +8,14 @@ __ronda-swagger__ brings together:
 
 to generate [Swagger 2.0][swagger2] specifications for your API.
 
+[![Build Status][travis-badge]][travis]
+
 [ronda-routing]: https://github.com/xsc/ronda-routing
 [ronda-schema]: https://github.com/xsc/ronda-schema
 [ring-swagger]: https://github.com/metosin/ring-swagger
 [swagger2]: https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#specification
+[travis-badge]: https://travis-ci.org/xsc/ronda-swagger.svg?branch=master
+[travis]: https://travis-ci.org/xsc/ronda-swagger
 
 ## Usage
 
