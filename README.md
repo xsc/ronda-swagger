@@ -99,6 +99,7 @@ And:
 ```clojure
 (def metadata-in-route
   (routing/enable-middlewares
+    descriptor
     :doc {:schema {:get {:params {:id s/Int}}}
           :swagger {:description "Get document."
                     :produces ["text/plain]
