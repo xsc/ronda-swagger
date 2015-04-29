@@ -1,7 +1,8 @@
 (ns ronda.swagger
   (:require [ronda.swagger.descriptor :as descriptor]
             [ronda.routing :as routing]
-            [ring.swagger.swagger2 :as sw2]))
+            [ring.swagger.swagger2 :as sw2]
+            [cheshire.core :as json]))
 
 ;; ## Swagger JSON
 
@@ -83,7 +84,7 @@
    See `swagger-json` for more possible values in `options`."
   [& [{:keys [memoize? encode]
        :or {memoize? true
-            encode   identity}
+            encode   json/generate-string}
        :as options}]]
   (let [swagger-opts (dissoc options :memoize? :encode)
         disable #(descriptor/disable-swagger % [%2])

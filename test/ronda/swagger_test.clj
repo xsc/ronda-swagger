@@ -62,4 +62,4 @@
                   :ronda/descriptor test-descriptor})]
           status => 200
           (headers "content-type") => #"^application/json.*"
-          body => map?)))
+          body => string?)))
