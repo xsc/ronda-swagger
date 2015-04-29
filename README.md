@@ -40,9 +40,7 @@ You can pass an additional map, containing data and options that should be
 directly passed to the underlying generator:
 
 ```clojure
-(swag/swagger-json
-  descriptor
-  {:info {:title "ronda API", :version "v1}})
+(swag/swagger-json descriptor {:info {:title "ronda API", :version "v1}})
 ;; => {:swagger "2.0", :info {:title "ronda API", :version "v1"}, ...}
 ```
 
@@ -56,6 +54,29 @@ as described [in its README][ronda-schema-integration].
 
 [route-descriptor]: https://github.com/xsc/ronda-routing#route-descriptors
 [ronda-schema-integration]: https://github.com/xsc/ronda-schema#integration-with-rondarouting
+
+### Swagger Ring Handler
+
+ronda-swagger offers a ring-compliant handler to-be-used in combination with
+[ronda-routing][ronda-routing]. The `RouteDescriptor` will be read from incoming
+requests, producing the Swagger JSON response:
+
+```clojure
+(def app
+  (-> (swag/swagger-handler {:info {:title "ronda API"}})
+      (ronda.routing/wrap-routing descriptor)))
+```
+
+Although, you should probably create a separate route pointing at the Swagger
+endpoint. Options to `swagger-handler` include those for `swagger-json`, as well
+as:
+
+- `:memoize?`: whether to memoize the encoded body,
+- `:encode`: a function to use to encode the Swagger map (defaults to
+  `cheshire.core/generate-string`).
+
+There is also `swagger-json-response` if you want to get the raw response map
+for a descriptor.
 
 ### Custom Metadata
 
