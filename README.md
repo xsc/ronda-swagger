@@ -2,9 +2,9 @@
 
 __ronda-swagger__ brings together:
 
-- [ronda-routing][ronda-routing],
-- [ronda-schema][ronda-schema], and
-- [ring-swagger][ring-swagger]
+- [ronda-routing][ronda-routing]'s `RouteDescriptor`,
+- [ronda-schema][ronda-schema]'s schema format, and
+- [ring-swagger][ring-swagger]'s awesomeness
 
 to generate [Swagger 2.0][swagger2] specifications for your API.
 
@@ -53,11 +53,21 @@ Options passed to [ring-swagger][ring-swagger] are:
 - `:ignore-missing-mappings?`
 - `:default-response-description-fn`
 
-To have schemas appear in the swagger output, ronda-schema has to be integrated
-as described [in its README][ronda-schema-integration].
+Schemas attached using the `:schema` middleware key will be included in the
+Swagger output:
+
+```clojure
+(def descriptor-with-schema
+  (ronda.routing/enable-middlewares
+    :my-route {:schema { ... }}))
+```
+
+Check out the [schema format][schemas] and how to have ronda-schema [play nicely
+with ronda-routing][ronda-schema-integration].
 
 [route-descriptor]: https://github.com/xsc/ronda-routing#route-descriptors
 [ronda-schema-integration]: https://github.com/xsc/ronda-schema#integration-with-rondarouting
+[schemas]: https://github.com/xsc/ronda-schema#schemas
 
 ### Swagger Ring Handler
 
@@ -92,10 +102,10 @@ output:
 (def metadata-in-schema
   (routing/enable-middlewares
     descriptor
-    :doc {:schema {:get {:params {:id s/Int}
-                         :description "Get document."
-                         :produces ["text/plain"]
-                         ...}}}))
+    :my-route {:schema {:get {:params {:id s/Int}
+                              :description "Get document."
+                              :produces ["text/plain"]
+                              ...}}}))
 ```
 
 And:
@@ -104,10 +114,10 @@ And:
 (def metadata-in-route
   (routing/enable-middlewares
     descriptor
-    :doc {:schema {:get {:params {:id s/Int}}}
-          :swagger {:description "Get document."
-                    :produces ["text/plain]
-                    ...}}))
+    :my-route {:schema {:get {:params {:id s/Int}}}
+               :swagger {:description "Get document."
+                         :produces ["text/plain]
+                         ...}}))
 ```
 
 Allowed metadata keys are: `:description`, `:summary`, `:tags`, `:consumes`,
