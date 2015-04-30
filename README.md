@@ -82,9 +82,9 @@ requests, producing the Swagger JSON response:
       (ronda.routing/wrap-routing descriptor)))
 ```
 
-Although, you should probably create a separate route pointing at the Swagger
-endpoint. Options to `swagger-handler` include those for `swagger-json`, as well
-as:
+(You should probably create a separate route pointing at the Swagger endpoint.)
+
+Options to `swagger-handler` include those for `swagger-json`, as well as:
 
 - `:memoize?`: whether to memoize the encoded body,
 - `:encode`: a function to use to encode the Swagger map (defaults to
