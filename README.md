@@ -44,7 +44,7 @@ You can pass an additional map, containing data and options that should be
 directly passed to the underlying generator:
 
 ```clojure
-(swag/swagger-json descriptor {:info {:title "ronda API", :version "v1}})
+(swag/swagger-json descriptor {:info {:title "ronda API", :version "v1"}})
 ;; => {:swagger "2.0", :info {:title "ronda API", :version "v1"}, ...}
 ```
 
