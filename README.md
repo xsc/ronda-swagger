@@ -59,6 +59,7 @@ Swagger output:
 ```clojure
 (def descriptor-with-schema
   (ronda.routing/enable-middlewares
+    descriptor
     :my-route {:schema { ... }}))
 ```
 
