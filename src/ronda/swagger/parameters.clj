@@ -1,15 +1,7 @@
 (ns ^:no-doc ronda.swagger.parameters
-  (:require [ronda.schema.data.request :as rq]
+  (:require [ronda.swagger.common :as common]
             [ring.swagger.swagger2-schema :as sw]
             [schema.core :as s]))
-
-(s/defn ^:private param-k :- s/Keyword
-  "Get the actual param keyword from a schema value."
-  [k]
-  (if (or (instance? schema.core.OptionalKey k)
-          (instance? schema.core.RequiredKey k))
-    (:k k)
-    k))
 
 (s/defn ^:private route-param-predicate :- (s/=> s/Bool s/Any)
   "Generate predicate checking whether a given key belongs to a
@@ -17,11 +9,11 @@
   [route-params :- [s/Any]]
   (let [route-param-set (set route-params)]
     (fn [k]
-      (contains? route-param-set (param-k k)))))
+      (contains? route-param-set (s/explicit-schema-key k)))))
 
 (s/defn ^:private default-parameter-type :- s/Keyword
   "Compute the default parameter type."
-  [{:keys [body]} :- rq/RawRequestSchema
+  [{:keys [body]} :- common/RequestSchema
    request-method :- s/Keyword]
   (if (or (#{:get :head :options} request-method)
           body)
@@ -33,7 +25,7 @@
    with type 'string' if missing."
   [route-params :- [s/Any]
    params       :- (s/maybe {s/Any s/Any})]
-  (let [exists? (set (map param-k (keys params)))
+  (let [exists? (set (map s/explicit-schema-key (keys params)))
         missing (remove exists? route-params)]
     (merge
       (zipmap missing (repeat s/Str))
@@ -48,7 +40,7 @@
    - otherwise, `:params` will be interpreted as form parameter.
 
    `:headers` and `:body` will be used directly."
-  [schema         :- rq/RawRequestSchema
+  [schema         :- common/RequestSchema
    request-method :- s/Keyword
    route-params   :- [s/Any]]
   (let [route-param? (route-param-predicate route-params)

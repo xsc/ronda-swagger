@@ -1,18 +1,13 @@
 (ns ^:no-doc ronda.swagger.responses
-  (:require [ronda.schema.data
-             [common :as common]
-             [request :as rq]
-             [response :as rs]]
+  (:require [ronda.swagger.common :as common]
             [schema.core :as s]
             [clojure.set :refer [rename-keys]]))
 
 (s/defn collect
-  [{:keys [responses]} :- rq/RawRequestSchema]
+  [{:keys [responses]} :- common/RequestSchema]
   (if-not (empty? responses)
     (->> (for [[statuses schema] responses
-               status (if (common/wildcard? statuses)
-                        [:default]
-                        (common/as-seq statuses))]
+               status (common/seq-with-default statuses [:default])]
            (->> (-> schema
                     (select-keys [:body :description :examples :headers])
                     (rename-keys {:body :schema}))

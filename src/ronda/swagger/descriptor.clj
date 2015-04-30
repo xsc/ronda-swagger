@@ -1,11 +1,11 @@
 (ns ^:no-doc ronda.swagger.descriptor
   (:require [ronda.swagger
+             [common :as common]
              [path :as path]
              [requests :as requests]]
             [ronda.routing
              [descriptor :refer [RouteDescriptor routes]]
              [middleware-data :as md]]
-            [ronda.schema.data.request :as rq]
             [ring.swagger.swagger2-schema :as sw]
             [schema.core :as s]))
 
@@ -30,7 +30,7 @@
     (let [data (md/route-middleware-data route-data :swagger)]
       (or (nil? data) data))))
 
-(s/defn ^:private route-schemas :- (s/maybe rq/RawRequests)
+(s/defn ^:private route-schemas :- (s/maybe common/Requests)
   "Given route data, read the route schemas (from the `:schema` middleware
    key), heeding the value of the `:swagger` middleware key."
   [route-data]
@@ -69,9 +69,9 @@
    s/Any s/Any})
 
 (s/defschema RouteSchemaPreprocessor
-  (s/=> rq/RawRequestSchema
+  (s/=> common/RequestSchema
         RouteData
-        rq/RawRequestSchema))
+        common/RequestSchema))
 
 (s/defn analyze-route :- (s/maybe SwaggerPath)
   "Analyze a single piece of route data and produce a map of `:path` and
