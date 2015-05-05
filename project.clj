@@ -6,7 +6,7 @@
             :year 2015
             :key "mit"}
   :dependencies [[org.clojure/clojure "1.7.0-beta2"]
-                 [metosin/ring-swagger "0.20.1"]
+                 [metosin/ring-swagger "0.20.2"]
                  [cheshire "5.4.0"]
                  [ronda/routing "0.2.7"]]
   :profiles {:dev {:dependencies [[midje "1.7.0-SNAPSHOT"]
