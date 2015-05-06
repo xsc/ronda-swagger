@@ -1,4 +1,4 @@
-(defproject ronda/swagger "0.1.1"
+(defproject ronda/swagger "0.1.2-SNAPSHOT"
   :description "swagger integration for ronda."
   :url "https://github.com/xsc/ronda-swagger"
   :license {:name "MIT License"
