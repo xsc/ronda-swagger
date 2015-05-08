@@ -14,7 +14,7 @@
   [swagger-data paths]
   (reduce
     (fn [swagger-data {:keys [path schema]}]
-      (assoc-in swagger-data [:paths path] schema))
+      (update-in swagger-data [:paths path] merge schema))
     swagger-data paths))
 
 (defn- initial-swagger-data
