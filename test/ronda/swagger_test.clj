@@ -7,13 +7,19 @@
 
 ;; ## Data
 
+(s/defschema Body {:text s/Str})
+
 (def test-descriptor
   (-> (bidi/descriptor
         ["/" {""           :root
-              ["doc/" :id] :doc}])
+              ["doc/" :id] {:get :doc
+                            :put :create}}])
       (md/enable-middlewares
-        :doc  {:schema {:get {:params {:id s/Int}}}
-               :auth   true})))
+        :doc    {:schema {:get {:params {:id s/Int}}}
+                 :auth   true}
+        :create  {:schema {:put {:params {:id s/Int}
+                                 :body Body}}
+                  :auth   true})))
 
 (defn conditional-auth-param
   [route-data schema]
@@ -38,11 +44,19 @@
           (:produces result) => ["application/json"]
           (-> result :consumes count) => 2
           (-> paths keys set) => #{"/" "/doc/{id}"}
+          (-> (paths "/doc/{id}") keys set) => #{:get :put}
           (->> (paths "/doc/{id}")
                :get :parameters
                (map (juxt :name :in :type))
                (set))
           => #{["auth-token" :query "string"]
+               ["id" :path "integer"]}
+          (->> (paths "/doc/{id}")
+               :put :parameters
+               (map (juxt :name :in :type))
+               (set))
+          => #{["Body" :body nil]
+               ["auth-token" :query "string"]
                ["id" :path "integer"]})))
 
 (s/with-fn-validation
