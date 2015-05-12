@@ -87,7 +87,7 @@ well as a path leading to it. The Ring handler can be generated as follows:
      :encode #(json/generate-string % {:pretty true})}))
 ```
 
-Making routes and the stack look like the following:
+Making routes and the stack look as follows:
 
 ```clojure
 (def routes
