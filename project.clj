@@ -5,7 +5,7 @@
             :url "http://opensource.org/licenses/MIT"
             :year 2015
             :key "mit"}
-  :dependencies [[org.clojure/clojure "1.7.0-beta2"]
+  :dependencies [[org.clojure/clojure "1.7.0-beta3"]
                  [metosin/ring-swagger "0.20.2"]
                  [cheshire "5.4.0"]
                  [ronda/routing "0.2.7"]]
