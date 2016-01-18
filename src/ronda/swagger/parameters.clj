@@ -47,7 +47,7 @@
         default-type (default-parameter-type schema request-method)
         {:keys [headers body params]} schema
         base (cond-> {}
-               headers (assoc :header headers)
+               headers (assoc :header (common/explicit-headers headers))
                body    (assoc :body body))]
     (->> params
          (add-missing-route-params route-params)

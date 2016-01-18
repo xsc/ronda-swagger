@@ -71,3 +71,11 @@
   (remove
     (set (mapcat as-seq (keys requests)))
     valid-request-methods))
+
+;; ## Headers Maps
+
+(s/defn explicit-headers :- {s/Any s/Any}
+  [headers :- (s/maybe {s/Any s/Any})]
+  (->> (for [[k v] headers]
+         [(cond-> k (string? k) s/required-key) v])
+       (into {})))

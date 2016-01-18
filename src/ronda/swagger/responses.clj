@@ -10,6 +10,7 @@
                status (common/seq-with-default statuses [:default])]
            (->> (-> schema
                     (select-keys [:body :description :examples :headers])
+                    (update-in [:headers] common/explicit-headers)
                     (rename-keys {:body :schema}))
                 (vector status)))
          (into {}))
