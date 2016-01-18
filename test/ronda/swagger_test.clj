@@ -12,11 +12,16 @@
 (def test-descriptor
   (-> (bidi/descriptor
         ["/" {""           :root
-              ["doc/" :id] {:get :doc
-                            :put :create}}])
+              ["doc/" :id] {:get  :doc
+                            :head :head
+                            :put  :create}}])
       (md/enable-middlewares
         :doc    {:schema {:get {:params {:id s/Int}}}
                  :auth   true}
+        :head  {:schema {:head {:headers {"accept" s/Str}
+                                :params {:id s/Int}
+                                :responses
+                                {302 {:headers {"location" s/Str}}}}}}
         :create  {:schema {:put {:params {:id s/Int}
                                  :body Body}}
                   :auth   true})))
@@ -44,20 +49,35 @@
           (:produces result) => ["application/json"]
           (-> result :consumes count) => 2
           (-> paths keys set) => #{"/" "/doc/{id}"}
-          (-> (paths "/doc/{id}") keys set) => #{:get :put}
+          (-> (paths "/doc/{id}") keys set) => #{:get :put :head}
+
           (->> (paths "/doc/{id}")
                :get :parameters
                (map (juxt :name :in :type))
                (set))
           => #{["auth-token" :query "string"]
                ["id" :path "integer"]}
+
+          (->> (paths "/doc/{id}")
+               :head :parameters
+               (map (juxt :name :in :type))
+               (set))
+          => #{["accept" :header "string"]
+               ["id" :path "integer"]}
+
           (->> (paths "/doc/{id}")
                :put :parameters
                (map (juxt :name :in :type))
                (set))
           => #{["Body" :body nil]
                ["auth-token" :query "string"]
-               ["id" :path "integer"]})))
+               ["id" :path "integer"]}
+
+          (let [responses (-> (paths "/doc/{id}") :head :responses)]
+            (keys responses) => [302]
+            (->> (get-in responses [302 :headers])
+                 (map (juxt key (comp :type val))))
+            => [["location" "string"]]))))
 
 (s/with-fn-validation
   (fact "about the swaggy response."
